@@ -77,10 +77,10 @@ namespace assignment {
 
     constexpr int min_key_value = std::numeric_limits<int>::min();
 
-    if (!Contains(key)) {
+    auto index = search_index(key);
+    if (!index.has_value()) {
       return false;
     }
-    auto index = search_index(key);
     data_[index.value()].key = min_key_value;
     sift_up(index.value());
     Extract();
