@@ -99,8 +99,12 @@ namespace assignment {
   }
 
   std::optional<int> MinBinaryHeap::Search(int key) const {
-    auto index = search_index(key);
-    return data_[index.value()].value;
+    for (int i = 0; i < size_; i++) {
+      if (data_[i].key == key) {
+        return data_[i].value;
+      }
+    }
+    return std::nullopt;
   }
 
   bool MinBinaryHeap::Contains(int key) const {
