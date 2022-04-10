@@ -40,13 +40,17 @@ namespace assignment {
       // двоичная куча заполнена, операция вставки нового узла невозможна
       return false;
     }
+    data_[size_].key = key;
+    data_[size_].value = value;
+    size_++;
+    sift_up(size_ - 1);
+    return true;
 
     // Tips:
     // 1. Вставьте новый узел в "конец" массива.
     // 2. Увеличьте размер двоичной кучи.
     // 3. Вызовите операцию sift_up над индексом вставленного элемента.
 
-    return false;
   }
 
   std::optional<int> MinBinaryHeap::Extract() {
@@ -55,6 +59,11 @@ namespace assignment {
       // двоичная куча пустая, операция извлечения корня невозможна
       return std::nullopt;
     }
+    Node temp =data_[0];
+    data_[0] = data_[size_ - 1];
+    size_--;
+    heapify(0);
+    return temp.value;
 
     // Tips:
     // 1. Сохраните значение текущего корня в переменной.
@@ -62,29 +71,36 @@ namespace assignment {
     // 3. Уменьшите размер двоичной кучи.
     // 4. Вызовите функцию "спуска" узлов heapify над индексом корня.
 
-    return std::nullopt;
   }
 
   bool MinBinaryHeap::Remove(int key) {
 
     constexpr int min_key_value = std::numeric_limits<int>::min();
 
+    if (!Contains(key)) {
+      return false;
+    }
+    auto index = search_index(key);
+    data_[index.value()].key = min_key_value;
+    sift_up(index.value());
+    Extract();
+    return true;
     // Tips:
     // 1. Найдите индекс удаляемого узла по ключу.
     // 2. Установите ключом удаляемого узла наименьшее возможное значение ключа min_key_value.
     // 3. Вызовите над индексом удаляемого элемента функцию sift_up.
     // 4. Извлеките корневой (удаляемый) узел из кучи операцией Extract.
 
-    return true;
   }
 
   void MinBinaryHeap::Clear() {
-    // Write your code here ...
+    size_ = 0;
+
   }
 
   std::optional<int> MinBinaryHeap::Search(int key) const {
-    // Write your code here ...
-    return std::nullopt;
+    auto index = search_index(key);
+    return data_[index.value()].value;
   }
 
   bool MinBinaryHeap::Contains(int key) const {
@@ -153,7 +169,11 @@ namespace assignment {
   }
 
   std::optional<int> MinBinaryHeap::search_index(int key) const {
-    // Write your code here ...
+    for (int i = 0; i < size_; i++) {
+      if (data_[i].key == key) {
+        return i;
+      }
+    }
     return std::nullopt;
   }
 
